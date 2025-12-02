@@ -1,10 +1,13 @@
 // socket.js - Socket.io client setup
-
 import { io } from 'socket.io-client';
 import { useEffect, useState } from 'react';
 
 // Socket.io connection URL
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+// Ensure VITE_SOCKET_URL is set in your .env file, or it defaults to localhost
+// const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+
+// HARDCODED to ensure it hits the running server
+const SOCKET_URL = 'http://localhost:5000';
 
 // Create socket instance
 export const socket = io(SOCKET_URL, {
@@ -22,32 +25,48 @@ export const useSocket = () => {
   const [users, setUsers] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
 
-  // Connect to socket server
+  // 1. Connect to socket server
   const connect = (username) => {
     socket.connect();
     if (username) {
       socket.emit('user_join', username);
+      
+      // Request Notification Permission on join
+      if ("Notification" in window && Notification.permission !== "granted") {
+        Notification.requestPermission();
+      }
     }
   };
 
-  // Disconnect from socket server
+  // 2. Disconnect
   const disconnect = () => {
     socket.disconnect();
   };
 
-  // Send a message
-  const sendMessage = (message) => {
-    socket.emit('send_message', { message });
+  // 3. Join/Leave Rooms (Advanced Feature)
+  const joinRoom = (room) => {
+    socket.emit('join_room', room);
+    // Clear messages when switching rooms if desired, or handle in UI
+    setMessages([]); 
   };
 
-  // Send a private message
+  const leaveRoom = (room) => {
+    socket.emit('leave_room', room);
+  };
+
+  // 4. Send Message (supports rooms)
+  const sendMessage = (message, room = null) => {
+    socket.emit('send_message', { message, room });
+  };
+
+  // 5. Send Private Message
   const sendPrivateMessage = (to, message) => {
     socket.emit('private_message', { to, message });
   };
 
-  // Set typing status
-  const setTyping = (isTyping) => {
-    socket.emit('typing', isTyping);
+  // 6. Set Typing Status
+  const setTyping = (isTyping, room = null) => {
+    socket.emit('typing', { isTyping, room });
   };
 
   // Socket event listeners
@@ -65,11 +84,27 @@ export const useSocket = () => {
     const onReceiveMessage = (message) => {
       setLastMessage(message);
       setMessages((prev) => [...prev, message]);
+
+      // BROWSER NOTIFICATION LOGIC
+      // If the document is hidden (user is on another tab), send a notification
+      if (document.hidden && Notification.permission === "granted") {
+        new Notification("New Message", {
+          body: `${message.sender}: ${message.message}`,
+          icon: '/vite.svg' 
+        });
+      }
     };
 
     const onPrivateMessage = (message) => {
       setLastMessage(message);
       setMessages((prev) => [...prev, message]);
+      
+      // Notify for private messages too
+      if (document.hidden && Notification.permission === "granted") {
+        new Notification(`Private from ${message.sender}`, {
+          body: message.message,
+        });
+      }
     };
 
     // User events
@@ -78,7 +113,6 @@ export const useSocket = () => {
     };
 
     const onUserJoined = (user) => {
-      // You could add a system message here
       setMessages((prev) => [
         ...prev,
         {
@@ -91,7 +125,6 @@ export const useSocket = () => {
     };
 
     const onUserLeft = (user) => {
-      // You could add a system message here
       setMessages((prev) => [
         ...prev,
         {
@@ -140,10 +173,12 @@ export const useSocket = () => {
     typingUsers,
     connect,
     disconnect,
+    joinRoom,      
+    leaveRoom,     
     sendMessage,
     sendPrivateMessage,
     setTyping,
   };
 };
 
-export default socket; 
+export default socket;

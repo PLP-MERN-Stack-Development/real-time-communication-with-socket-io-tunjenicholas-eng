@@ -1,0 +1,188 @@
+/* Ensure the app takes full height and resets fonts */
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* MAIN CONTAINER - Explicit white background to prevent Dark Mode clashes */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: #ffffff; /* Explicit white */
+  color: #333333; /* Explicit dark text */
+  overflow: hidden; /* Prevent double scrollbars */
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 260px;
+  background-color: #f8f9fa; /* Light gray */
+  border-right: 1px solid #dee2e6;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #212529;
+  font-size: 1.2rem;
+}
+
+.room-controls {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* ROOM BUTTONS */
+.room-controls button {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 10px;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  color: #495057;
+  transition: all 0.2s;
+}
+
+.room-controls button:hover {
+  background-color: #dee2e6;
+  color: #000;
+}
+
+/* ONLINE USER LIST */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+}
+
+.sidebar li {
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  color: #495057;
+  font-weight: 500;
+}
+
+/* CHAT AREA */
+.chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  position: relative;
+}
+
+/* MESSAGES LIST */
+.messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: #ffffff;
+}
+
+/* MESSAGE BUBBLES */
+.message-bubble {
+  max-width: 70%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  position: relative;
+  word-wrap: break-word;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* MY MESSAGES (Right side, Blue) */
+.my-message {
+  align-self: flex-end;
+  background-color: #007bff;
+  color: #ffffff; /* Explicit white text */
+  border-bottom-right-radius: 4px;
+}
+
+/* OTHER MESSAGES (Left side, Gray) */
+.other-message {
+  align-self: flex-start;
+  background-color: #f1f3f5;
+  color: #212529; /* Explicit dark text */
+  border-bottom-left-radius: 4px;
+  border: 1px solid #e9ecef;
+}
+
+/* TIMESTAMP & SENDER NAME */
+.message-bubble strong {
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.timestamp {
+  display: block;
+  font-size: 0.7rem;
+  margin-top: 6px;
+  text-align: right;
+  opacity: 0.8;
+}
+
+/* TYPING INDICATOR */
+.typing-indicator {
+  height: 24px;
+  padding: 0 20px;
+  font-style: italic;
+  color: #868e96;
+  font-size: 0.9rem;
+  background-color: #fff;
+}
+
+/* INPUT AREA */
+.input-area {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  display: flex;
+  gap: 12px;
+}
+
+/* INPUT FIELD FIX */
+.input-area input {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 24px;
+  border: 1px solid #ced4da;
+  outline: none;
+  font-size: 1rem;
+  background-color: #ffffff; /* Force white background */
+  color: #212529; /* Force black text */
+}
+
+.input-area input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+}
+
+.input-area button {
+  padding: 10px 24px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.input-area button:hover {
+  background-color: #0056b3;
+}
